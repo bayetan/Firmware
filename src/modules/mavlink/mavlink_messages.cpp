@@ -1082,7 +1082,7 @@ protected:
 			matrix::Eulerf euler = matrix::Quatf(att.q);
 			msg.airspeed = airspeed.indicated_airspeed_m_s;
 			msg.groundspeed = sqrtf(pos.vx * pos.vx + pos.vy * pos.vy);
-			msg.heading = _wrap_2pi(euler.psi()) * M_RAD_TO_DEG_F;
+			msg.heading = math::degrees(euler.psi());
 
 			if (armed.armed) {
 				actuator_controls_s act0 = {};
@@ -1198,7 +1198,7 @@ protected:
 			msg.vel_acc = gps.s_variance_m_s * 1e3f;
 			msg.hdg_acc = gps.c_variance_rad * 1e5f / M_DEG_TO_RAD_F;
 			msg.vel = cm_uint16_from_m_float(gps.vel_m_s);
-			msg.cog = _wrap_2pi(gps.cog_rad) * M_RAD_TO_DEG_F * 1e2f;
+			msg.cog = math::degrees(gps.cog_rad) * 1e2f;
 			msg.satellites_visible = gps.satellites_used;
 
 			mavlink_msg_gps_raw_int_send_struct(_mavlink->get_channel(), &msg);
@@ -1795,7 +1795,7 @@ protected:
 			msg.vy = lpos.vy * 100.0f;
 			msg.vz = lpos.vz * 100.0f;
 
-			msg.hdg = _wrap_2pi(lpos.yaw) * M_RAD_TO_DEG_F * 100.0f;
+			msg.hdg = math::degrees(lpos.yaw) * 100.0f;
 
 			mavlink_msg_global_position_int_send_struct(_mavlink->get_channel(), &msg);
 
