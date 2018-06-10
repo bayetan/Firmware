@@ -258,7 +258,17 @@ pipeline {
             sh 'make distclean; rm -rf .ros; rm -rf .gazebo'
             sh 'make tests_mission_coverage'
             withCredentials([string(credentialsId: 'FIRMWARE_CODECOV_TOKEN', variable: 'CODECOV_TOKEN')]) {
-              sh 'curl -s https://codecov.io/bash | bash -s'
+              sh 'curl -s https://codecov.io/bash | bash -s - -F px4_mission_test'
+            }
+            withCredentials([string(credentialsId: 'ECL_CODECOV_TOKEN', variable: 'CODECOV_TOKEN')]) {
+              dir(src/lib/ecl) {
+                sh 'curl -s https://codecov.io/bash | bash -s - -R . -p ../../.. -k . -F px4_mission_test'
+              }
+            }
+            withCredentials([string(credentialsId: 'MATRIX_CODECOV_TOKEN', variable: 'CODECOV_TOKEN')]) {
+              dir(src/lib/matrix) {
+                sh 'curl -s https://codecov.io/bash | bash -s - -R . -p ../../.. -k . -F px4_mission_test'
+              }
             }
             sh 'make distclean'
           }
@@ -298,8 +308,18 @@ pipeline {
         //     sh 'ulimit -c unlimited; make tests_coverage'
         //     sh 'ls'
         //     withCredentials([string(credentialsId: 'FIRMWARE_CODECOV_TOKEN', variable: 'CODECOV_TOKEN')]) {
-        //       sh 'curl -s https://codecov.io/bash | bash -s'
+        //       sh 'curl -s https://codecov.io/bash | bash -s - -F px4_unit_test'
         //     }
+        //    withCredentials([string(credentialsId: 'ECL_CODECOV_TOKEN', variable: 'CODECOV_TOKEN')]) {
+        //      dir(src/lib/ecl) {
+        //        sh 'curl -s https://codecov.io/bash | bash -s - -R . -p ../../.. -k . -F px4_unit_test'
+        //      }
+        //    }
+        //    withCredentials([string(credentialsId: 'MATRIX_CODECOV_TOKEN', variable: 'CODECOV_TOKEN')]) {
+        //      dir(src/lib/matrix) {
+        //        sh 'curl -s https://codecov.io/bash | bash -s - -R . -p ../../.. -k . -F px4_unit_test'
+        //      }
+        //    }
         //     sh 'make distclean'
         //   }
         //   post {
